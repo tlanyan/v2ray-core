@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/rand"
 	"io"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -120,7 +119,7 @@ func TestMultiBufferReadAllToByte(t *testing.T) {
 		common.Must(err)
 		f.Close()
 
-		cnt, err := ioutil.ReadFile(dat)
+		cnt, err := os.ReadFile(dat)
 		common.Must(err)
 
 		if d := cmp.Diff(buf2, cnt); d != "" {
@@ -159,7 +158,7 @@ func TestSplitFirstBytes(t *testing.T) {
 		t.Error("unexpected cnt from SplitFirstBytes ", cnt)
 	}
 	if d := cmp.Diff(string(o), "ab"); d != "" {
-		t.Error("unexpected splited result from SplitFirstBytes ", d)
+		t.Error("unexpected split result from SplitFirstBytes ", d)
 	}
 }
 

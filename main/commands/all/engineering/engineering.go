@@ -9,9 +9,17 @@ var cmdEngineering = &base.Command{
 	Commands: []*base.Command{
 		cmdConvertPb,
 		cmdReversePb,
+		cmdNonNativeLinkExtract,
+		cmdNonNativeLinkExec,
+		cmdSubscriptionEntriesExtract,
+		cmdEncodeDataURL,
 	},
 }
 
 func init() {
 	base.RegisterCommand(cmdEngineering)
+}
+
+func AddCommand(cmd *base.Command) {
+	cmdEngineering.Commands = append(cmdEngineering.Commands, cmd)
 }

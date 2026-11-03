@@ -16,7 +16,6 @@ import (
 
 var (
 	errNotPacketConn = errors.New("not a packet connection")
-	errUnsupported   = errors.New("unsupported action")
 )
 
 func ToPacketAddrConn(link *transport.Link, dest net.Destination) (net.PacketConn, error) {
@@ -27,7 +26,17 @@ func ToPacketAddrConn(link *transport.Link, dest net.Destination) (net.PacketCon
 	case seqPacketMagicAddress:
 		return &packetConnectionAdaptor{
 			readerAccess: &sync.Mutex{},
+			writerAccess: &sync.Mutex{},
 			readerBuffer: nil,
+			isStream:     false,
+			link:         link,
+		}, nil
+	case streamPacketMagicAddress:
+		return &packetConnectionAdaptor{
+			readerAccess: &sync.Mutex{},
+			writerAccess: &sync.Mutex{},
+			streamReader: &buf.BufferedReader{Reader: link.Reader},
+			isStream:     true,
 			link:         link,
 		}, nil
 	default:
@@ -36,34 +45,58 @@ func ToPacketAddrConn(link *transport.Link, dest net.Destination) (net.PacketCon
 }
 
 func CreatePacketAddrConn(ctx context.Context, dispatcher routing.Dispatcher, isStream bool) (net.PacketConn, error) {
-	if isStream {
-		return nil, errUnsupported
-	}
 	packetDest := net.Destination{
 		Address: net.DomainAddress(seqPacketMagicAddress),
 		Port:    0,
 		Network: net.Network_UDP,
 	}
+	if isStream {
+		packetDest.Address = net.DomainAddress(streamPacketMagicAddress)
+		packetDest.Network = net.Network_TCP
+	}
 	link, err := dispatcher.Dispatch(ctx, packetDest)
 	if err != nil {
 		return nil, err
 	}
-	return &packetConnectionAdaptor{
+	conn := &packetConnectionAdaptor{
 		readerAccess: &sync.Mutex{},
+		writerAccess: &sync.Mutex{},
 		readerBuffer: nil,
+		isStream:     isStream,
 		link:         link,
-	}, nil
+	}
+	if isStream {
+		conn.streamReader = &buf.BufferedReader{Reader: link.Reader}
+	}
+	return conn, nil
 }
 
 type packetConnectionAdaptor struct {
 	readerAccess *sync.Mutex
+	writerAccess *sync.Mutex
 	readerBuffer buf.MultiBuffer
+	streamReader *buf.BufferedReader
+	isStream     bool
 	link         *transport.Link
 }
 
 func (c *packetConnectionAdaptor) ReadFrom(p []byte) (n int, addr gonet.Addr, err error) {
 	c.readerAccess.Lock()
 	defer c.readerAccess.Unlock()
+	if c.isStream {
+		packet, err := ExtractPacketFromStream(c.streamReader)
+		if err != nil {
+			return 0, nil, err
+		}
+		data, addr, err := ExtractAddressFromPacket(packet)
+		if err != nil {
+			packet.Release()
+			return 0, nil, err
+		}
+		n = copy(p, data.Bytes())
+		data.Release()
+		return n, addr, nil
+	}
 	if c.readerBuffer.IsEmpty() {
 		c.readerBuffer, err = c.link.Reader.ReadMultiBuffer()
 		if err != nil {
@@ -79,12 +112,25 @@ func (c *packetConnectionAdaptor) ReadFrom(p []byte) (n int, addr gonet.Addr, er
 }
 
 func (c *packetConnectionAdaptor) WriteTo(p []byte, addr gonet.Addr) (n int, err error) {
+	_, ok := addr.(*gonet.UDPAddr)
+	if !ok {
+		// address other than UDPAddr is not supported, and will be dropped.
+		return 0, nil
+	}
 	payloadLen := len(p)
 	var buffer *buf.Buffer
 	buffer, err = AttachAddressToPacket(buf.FromBytes(p), addr)
 	if err != nil {
 		return 0, err
 	}
+	if c.isStream {
+		buffer, err = AttachLengthToPacket(buffer)
+		if err != nil {
+			return 0, err
+		}
+	}
+	c.writerAccess.Lock()
+	defer c.writerAccess.Unlock()
 	mb := buf.MultiBuffer{buffer}
 	err = c.link.Writer.WriteMultiBuffer(mb)
 	if err != nil {
@@ -94,10 +140,12 @@ func (c *packetConnectionAdaptor) WriteTo(p []byte, addr gonet.Addr) (n int, err
 }
 
 func (c *packetConnectionAdaptor) Close() error {
+	readerErr := common.Interrupt(c.link.Reader)
+	writerErr := common.Interrupt(c.link.Writer)
 	c.readerAccess.Lock()
-	defer c.readerAccess.Unlock()
 	c.readerBuffer = buf.ReleaseMulti(c.readerBuffer)
-	return common.Interrupt(c.link)
+	c.readerAccess.Unlock()
+	return errors.Combine(readerErr, writerErr)
 }
 
 func (c packetConnectionAdaptor) LocalAddr() gonet.Addr {
@@ -117,6 +165,9 @@ func (c packetConnectionAdaptor) SetWriteDeadline(t time.Time) error {
 }
 
 func ToPacketAddrConnWrapper(conn net.PacketConn, isStream bool) FusedConnection {
+	if isStream {
+		return &streamPacketConnWrapper{PacketConn: conn}
+	}
 	return &packetConnWrapper{conn}
 }
 
@@ -136,7 +187,7 @@ type FusedConnection interface {
 func (pc *packetConnWrapper) Read(p []byte) (n int, err error) {
 	recbuf := buf.StackNew()
 	recbuf.Extend(2048)
-	n, addr, err := pc.PacketConn.ReadFrom(recbuf.Bytes())
+	n, addr, err := pc.ReadFrom(recbuf.Bytes())
 	if err != nil {
 		return 0, err
 	}
@@ -155,12 +206,88 @@ func (pc *packetConnWrapper) Write(p []byte) (n int, err error) {
 	if err != nil {
 		return 0, err
 	}
-	_, err = pc.PacketConn.WriteTo(data.Bytes(), addr)
+	_, err = pc.WriteTo(data.Bytes(), addr)
 	if err != nil {
 		return 0, err
 	}
 	data.Release()
 	return len(p), nil
+}
+
+type streamPacketConnWrapper struct {
+	net.PacketConn
+
+	readAccess  sync.Mutex
+	readBuffer  []byte
+	packetRead  []byte
+	writeAccess sync.Mutex
+	writeBuffer []byte
+}
+
+func (pc *streamPacketConnWrapper) RemoteAddr() gonet.Addr {
+	return nil
+}
+
+func (pc *streamPacketConnWrapper) Read(p []byte) (n int, err error) {
+	pc.readAccess.Lock()
+	defer pc.readAccess.Unlock()
+	for len(pc.readBuffer) == 0 {
+		if pc.packetRead == nil {
+			pc.packetRead = make([]byte, maxStreamPacketAddrSegmentLen)
+		}
+		var addr gonet.Addr
+		n, addr, err = pc.PacketConn.ReadFrom(pc.packetRead)
+		if err != nil {
+			return 0, err
+		}
+		packet, err := AttachAddressToPacket(buf.FromBytes(pc.packetRead[:n]), addr)
+		if err != nil {
+			return 0, err
+		}
+		frame, err := AttachLengthToPacket(packet)
+		if err != nil {
+			return 0, err
+		}
+		pc.readBuffer = append(pc.readBuffer[:0], frame.Bytes()...)
+		frame.Release()
+	}
+	n = copy(p, pc.readBuffer)
+	pc.readBuffer = pc.readBuffer[n:]
+	return n, nil
+}
+
+func (pc *streamPacketConnWrapper) Write(p []byte) (n int, err error) {
+	pc.writeAccess.Lock()
+	defer pc.writeAccess.Unlock()
+	pc.writeBuffer = append(pc.writeBuffer, p...)
+	for len(pc.writeBuffer) >= streamPacketLengthSize {
+		length := int(pc.writeBuffer[0])<<8 | int(pc.writeBuffer[1])
+		if length == 0 {
+			return 0, errors.New("invalid empty packetaddr segment")
+		}
+		frameEnd := streamPacketLengthSize + length
+		if len(pc.writeBuffer) < frameEnd {
+			break
+		}
+		data, addr, err := ExtractAddressFromPacket(buf.FromBytes(pc.writeBuffer[streamPacketLengthSize:frameEnd]))
+		if err != nil {
+			return 0, err
+		}
+		if _, err = pc.PacketConn.WriteTo(data.Bytes(), addr); err != nil {
+			data.Release()
+			return 0, err
+		}
+		data.Release()
+		pc.writeBuffer = pc.writeBuffer[frameEnd:]
+	}
+	if len(pc.writeBuffer) == 0 && cap(pc.writeBuffer) > buf.Size {
+		pc.writeBuffer = nil
+	}
+	return len(p), nil
+}
+
+func (pc *streamPacketConnWrapper) Close() error {
+	return pc.PacketConn.Close()
 }
 
 func (pc *packetConnWrapper) Close() error {
@@ -174,6 +301,8 @@ func GetDestinationSubsetOf(dest net.Destination) (bool, error) {
 	switch dest.Address.Domain() {
 	case seqPacketMagicAddress:
 		return false, nil
+	case streamPacketMagicAddress:
+		return true, nil
 	default:
 		return false, errNotPacketConn
 	}

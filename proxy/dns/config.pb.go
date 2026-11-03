@@ -7,6 +7,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -17,23 +18,23 @@ const (
 )
 
 type Config struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
+	state protoimpl.MessageState `protogen:"open.v1"`
 	// Server is the DNS server address. If specified, this address overrides the
 	// original one.
-	Server    *net.Endpoint `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
-	UserLevel uint32        `protobuf:"varint,2,opt,name=user_level,json=userLevel,proto3" json:"user_level,omitempty"`
+	Server              *net.Endpoint `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+	UserLevel           uint32        `protobuf:"varint,2,opt,name=user_level,json=userLevel,proto3" json:"user_level,omitempty"`
+	OverrideResponseTtl bool          `protobuf:"varint,4,opt,name=override_response_ttl,json=overrideResponseTtl,proto3" json:"override_response_ttl,omitempty"`
+	ResponseTtl         uint32        `protobuf:"varint,3,opt,name=response_ttl,json=responseTtl,proto3" json:"response_ttl,omitempty"`
+	Non_IPQuery         string        `protobuf:"bytes,5,opt,name=non_IP_query,json=nonIPQuery,proto3" json:"non_IP_query,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *Config) Reset() {
 	*x = Config{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proxy_dns_config_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_proxy_dns_config_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *Config) String() string {
@@ -44,7 +45,7 @@ func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
 	mi := &file_proxy_dns_config_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -73,19 +74,40 @@ func (x *Config) GetUserLevel() uint32 {
 	return 0
 }
 
+func (x *Config) GetOverrideResponseTtl() bool {
+	if x != nil {
+		return x.OverrideResponseTtl
+	}
+	return false
+}
+
+func (x *Config) GetResponseTtl() uint32 {
+	if x != nil {
+		return x.ResponseTtl
+	}
+	return 0
+}
+
+func (x *Config) GetNon_IPQuery() string {
+	if x != nil {
+		return x.Non_IPQuery
+	}
+	return ""
+}
+
 type SimplifiedConfig struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	OverrideResponseTtl bool                   `protobuf:"varint,4,opt,name=override_response_ttl,json=overrideResponseTtl,proto3" json:"override_response_ttl,omitempty"`
+	ResponseTtl         uint32                 `protobuf:"varint,3,opt,name=response_ttl,json=responseTtl,proto3" json:"response_ttl,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *SimplifiedConfig) Reset() {
 	*x = SimplifiedConfig{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proxy_dns_config_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_proxy_dns_config_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *SimplifiedConfig) String() string {
@@ -96,7 +118,7 @@ func (*SimplifiedConfig) ProtoMessage() {}
 
 func (x *SimplifiedConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_proxy_dns_config_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -111,48 +133,53 @@ func (*SimplifiedConfig) Descriptor() ([]byte, []int) {
 	return file_proxy_dns_config_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *SimplifiedConfig) GetOverrideResponseTtl() bool {
+	if x != nil {
+		return x.OverrideResponseTtl
+	}
+	return false
+}
+
+func (x *SimplifiedConfig) GetResponseTtl() uint32 {
+	if x != nil {
+		return x.ResponseTtl
+	}
+	return 0
+}
+
 var File_proxy_dns_config_proto protoreflect.FileDescriptor
 
-var file_proxy_dns_config_proto_rawDesc = []byte{
-	0x0a, 0x16, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2f, 0x64, 0x6e, 0x73, 0x2f, 0x63, 0x6f, 0x6e, 0x66,
-	0x69, 0x67, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x14, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e,
-	0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x64, 0x6e, 0x73, 0x1a, 0x1c,
-	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x6e, 0x65, 0x74, 0x2f, 0x64, 0x65, 0x73, 0x74, 0x69,
-	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x65, 0x78, 0x74, 0x2f, 0x65, 0x78,
-	0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x60,
-	0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x37, 0x0a, 0x06, 0x73, 0x65, 0x72, 0x76,
-	0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x76, 0x32, 0x72, 0x61, 0x79,
-	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x6e, 0x65, 0x74,
-	0x2e, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x06, 0x73, 0x65, 0x72, 0x76, 0x65,
-	0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x09, 0x75, 0x73, 0x65, 0x72, 0x4c, 0x65, 0x76, 0x65, 0x6c,
-	0x22, 0x2b, 0x0a, 0x10, 0x53, 0x69, 0x6d, 0x70, 0x6c, 0x69, 0x66, 0x69, 0x65, 0x64, 0x43, 0x6f,
-	0x6e, 0x66, 0x69, 0x67, 0x3a, 0x17, 0x82, 0xb5, 0x18, 0x0a, 0x0a, 0x08, 0x6f, 0x75, 0x74, 0x62,
-	0x6f, 0x75, 0x6e, 0x64, 0x82, 0xb5, 0x18, 0x05, 0x12, 0x03, 0x64, 0x6e, 0x73, 0x42, 0x5d, 0x0a,
-	0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x64, 0x6e, 0x73, 0x50, 0x01, 0x5a, 0x28, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x76, 0x32, 0x66, 0x6c, 0x79, 0x2f, 0x76, 0x32,
-	0x72, 0x61, 0x79, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x76, 0x35, 0x2f, 0x70, 0x72, 0x6f, 0x78,
-	0x79, 0x2f, 0x64, 0x6e, 0x73, 0xaa, 0x02, 0x14, 0x56, 0x32, 0x52, 0x61, 0x79, 0x2e, 0x43, 0x6f,
-	0x72, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x44, 0x6e, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
-}
+const file_proxy_dns_config_proto_rawDesc = "" +
+	"\n" +
+	"\x16proxy/dns/config.proto\x12\x14v2ray.core.proxy.dns\x1a\x1ccommon/net/destination.proto\x1a common/protoext/extensions.proto\"\xd9\x01\n" +
+	"\x06Config\x127\n" +
+	"\x06server\x18\x01 \x01(\v2\x1f.v2ray.core.common.net.EndpointR\x06server\x12\x1d\n" +
+	"\n" +
+	"user_level\x18\x02 \x01(\rR\tuserLevel\x122\n" +
+	"\x15override_response_ttl\x18\x04 \x01(\bR\x13overrideResponseTtl\x12!\n" +
+	"\fresponse_ttl\x18\x03 \x01(\rR\vresponseTtl\x12 \n" +
+	"\fnon_IP_query\x18\x05 \x01(\tR\n" +
+	"nonIPQuery\"~\n" +
+	"\x10SimplifiedConfig\x122\n" +
+	"\x15override_response_ttl\x18\x04 \x01(\bR\x13overrideResponseTtl\x12!\n" +
+	"\fresponse_ttl\x18\x03 \x01(\rR\vresponseTtl:\x13\x82\xb5\x18\x0f\n" +
+	"\boutbound\x12\x03dnsB]\n" +
+	"\x18com.v2ray.core.proxy.dnsP\x01Z(github.com/v2fly/v2ray-core/v5/proxy/dns\xaa\x02\x14V2Ray.Core.Proxy.Dnsb\x06proto3"
 
 var (
 	file_proxy_dns_config_proto_rawDescOnce sync.Once
-	file_proxy_dns_config_proto_rawDescData = file_proxy_dns_config_proto_rawDesc
+	file_proxy_dns_config_proto_rawDescData []byte
 )
 
 func file_proxy_dns_config_proto_rawDescGZIP() []byte {
 	file_proxy_dns_config_proto_rawDescOnce.Do(func() {
-		file_proxy_dns_config_proto_rawDescData = protoimpl.X.CompressGZIP(file_proxy_dns_config_proto_rawDescData)
+		file_proxy_dns_config_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proxy_dns_config_proto_rawDesc), len(file_proxy_dns_config_proto_rawDesc)))
 	})
 	return file_proxy_dns_config_proto_rawDescData
 }
 
 var file_proxy_dns_config_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proxy_dns_config_proto_goTypes = []interface{}{
+var file_proxy_dns_config_proto_goTypes = []any{
 	(*Config)(nil),           // 0: v2ray.core.proxy.dns.Config
 	(*SimplifiedConfig)(nil), // 1: v2ray.core.proxy.dns.SimplifiedConfig
 	(*net.Endpoint)(nil),     // 2: v2ray.core.common.net.Endpoint
@@ -171,37 +198,11 @@ func file_proxy_dns_config_proto_init() {
 	if File_proxy_dns_config_proto != nil {
 		return
 	}
-	if !protoimpl.UnsafeEnabled {
-		file_proxy_dns_config_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proxy_dns_config_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SimplifiedConfig); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proxy_dns_config_proto_rawDesc,
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proxy_dns_config_proto_rawDesc), len(file_proxy_dns_config_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
@@ -212,7 +213,6 @@ func file_proxy_dns_config_proto_init() {
 		MessageInfos:      file_proxy_dns_config_proto_msgTypes,
 	}.Build()
 	File_proxy_dns_config_proto = out.File
-	file_proxy_dns_config_proto_rawDesc = nil
 	file_proxy_dns_config_proto_goTypes = nil
 	file_proxy_dns_config_proto_depIdxs = nil
 }

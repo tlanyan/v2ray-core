@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lucas-clemente/quic-go"
+	"github.com/quic-go/quic-go"
 
 	"github.com/v2fly/v2ray-core/v5/common"
 	"github.com/v2fly/v2ray-core/v5/common/net"
@@ -16,7 +16,7 @@ import (
 
 type connectionContext struct {
 	rawConn *sysConn
-	conn    quic.Connection
+	conn    *quic.Conn
 }
 
 var errConnectionClosed = newError("connection closed")
@@ -46,7 +46,7 @@ type clientConnections struct {
 	cleanup *task.Periodic
 }
 
-func isActive(s quic.Connection) bool {
+func isActive(s *quic.Conn) bool {
 	select {
 	case <-s.Context().Done():
 		return false
@@ -150,7 +150,6 @@ func (s *clientConnections) openConnection(destAddr net.Addr, config *Config, tl
 	}
 
 	quicConfig := &quic.Config{
-		ConnectionIDLength:   12,
 		HandshakeIdleTimeout: time.Second * 8,
 		MaxIdleTimeout:       time.Second * 30,
 		KeepAlivePeriod:      time.Second * 15,
@@ -162,7 +161,19 @@ func (s *clientConnections) openConnection(destAddr net.Addr, config *Config, tl
 		return nil, err
 	}
 
-	conn, err := quic.DialContext(context.Background(), sysConn, destAddr, "", tlsConfig.GetTLSConfig(tls.WithDestination(dest)), quicConfig)
+	connectionIDLength := 4
+
+	if config.ConnectionIdLength != nil {
+		connectionIDLength = int(*config.ConnectionIdLength)
+	}
+
+	tr := quic.Transport{
+		Conn:               sysConn,
+		ConnectionIDLength: connectionIDLength,
+	}
+
+	conn, err := tr.Dial(context.Background(), destAddr,
+		tlsConfig.GetTLSConfig(tls.WithDestination(dest), tls.WithNextProto("h3")), quicConfig)
 	if err != nil {
 		sysConn.Close()
 		return nil, err

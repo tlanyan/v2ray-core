@@ -6,6 +6,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -16,18 +17,16 @@ const (
 )
 
 type ListInstanceReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListInstanceReq) Reset() {
 	*x = ListInstanceReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *ListInstanceReq) String() string {
@@ -38,7 +37,7 @@ func (*ListInstanceReq) ProtoMessage() {}
 
 func (x *ListInstanceReq) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -54,20 +53,17 @@ func (*ListInstanceReq) Descriptor() ([]byte, []int) {
 }
 
 type ListInstanceResp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          []string               `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
-
-	Name []string `protobuf:"bytes,1,rep,name=name,proto3" json:"name,omitempty"`
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListInstanceResp) Reset() {
 	*x = ListInstanceResp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *ListInstanceResp) String() string {
@@ -78,7 +74,7 @@ func (*ListInstanceResp) ProtoMessage() {}
 
 func (x *ListInstanceResp) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -101,22 +97,19 @@ func (x *ListInstanceResp) GetName() []string {
 }
 
 type AddInstanceReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Name             string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	ConfigType       string `protobuf:"bytes,2,opt,name=configType,proto3" json:"configType,omitempty"`
-	ConfigContentB64 string `protobuf:"bytes,3,opt,name=configContentB64,proto3" json:"configContentB64,omitempty"`
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Name             string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	ConfigType       string                 `protobuf:"bytes,2,opt,name=configType,proto3" json:"configType,omitempty"`
+	ConfigContentB64 string                 `protobuf:"bytes,3,opt,name=configContentB64,proto3" json:"configContentB64,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *AddInstanceReq) Reset() {
 	*x = AddInstanceReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *AddInstanceReq) String() string {
@@ -127,7 +120,7 @@ func (*AddInstanceReq) ProtoMessage() {}
 
 func (x *AddInstanceReq) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -164,18 +157,16 @@ func (x *AddInstanceReq) GetConfigContentB64() string {
 }
 
 type AddInstanceResp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AddInstanceResp) Reset() {
 	*x = AddInstanceResp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *AddInstanceResp) String() string {
@@ -186,7 +177,7 @@ func (*AddInstanceResp) ProtoMessage() {}
 
 func (x *AddInstanceResp) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -202,20 +193,17 @@ func (*AddInstanceResp) Descriptor() ([]byte, []int) {
 }
 
 type StartInstanceReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
-
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StartInstanceReq) Reset() {
 	*x = StartInstanceReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *StartInstanceReq) String() string {
@@ -226,7 +214,7 @@ func (*StartInstanceReq) ProtoMessage() {}
 
 func (x *StartInstanceReq) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -249,18 +237,16 @@ func (x *StartInstanceReq) GetName() string {
 }
 
 type StartInstanceResp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StartInstanceResp) Reset() {
 	*x = StartInstanceResp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *StartInstanceResp) String() string {
@@ -271,7 +257,7 @@ func (*StartInstanceResp) ProtoMessage() {}
 
 func (x *StartInstanceResp) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -287,18 +273,16 @@ func (*StartInstanceResp) Descriptor() ([]byte, []int) {
 }
 
 type Config struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Config) Reset() {
 	*x = Config{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_instman_command_command_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_instman_command_command_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *Config) String() string {
@@ -309,7 +293,7 @@ func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
 	mi := &file_app_instman_command_command_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -326,80 +310,44 @@ func (*Config) Descriptor() ([]byte, []int) {
 
 var File_app_instman_command_command_proto protoreflect.FileDescriptor
 
-var file_app_instman_command_command_proto_rawDesc = []byte{
-	0x0a, 0x21, 0x61, 0x70, 0x70, 0x2f, 0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2f, 0x63, 0x6f,
-	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x12, 0x1e, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e,
-	0x61, 0x70, 0x70, 0x2e, 0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
-	0x61, 0x6e, 0x64, 0x1a, 0x20, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x65, 0x78, 0x74, 0x2f, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x11, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x49, 0x6e, 0x73,
-	0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x22, 0x26, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74,
-	0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x22, 0x70, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52,
-	0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67,
-	0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x66,
-	0x69, 0x67, 0x54, 0x79, 0x70, 0x65, 0x12, 0x2a, 0x0a, 0x10, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67,
-	0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x42, 0x36, 0x34, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x10, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x42,
-	0x36, 0x34, 0x22, 0x11, 0x0a, 0x0f, 0x41, 0x64, 0x64, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63,
-	0x65, 0x52, 0x65, 0x73, 0x70, 0x22, 0x26, 0x0a, 0x10, 0x53, 0x74, 0x61, 0x72, 0x74, 0x49, 0x6e,
-	0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x13, 0x0a,
-	0x11, 0x53, 0x74, 0x61, 0x72, 0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65,
-	0x73, 0x70, 0x22, 0x28, 0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x3a, 0x1e, 0x82, 0xb5,
-	0x18, 0x0d, 0x0a, 0x0b, 0x67, 0x72, 0x70, 0x63, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x82,
-	0xb5, 0x18, 0x09, 0x12, 0x07, 0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x32, 0xf4, 0x02, 0x0a,
-	0x19, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x6d,
-	0x65, 0x6e, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x71, 0x0a, 0x0c, 0x4c, 0x69,
-	0x73, 0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x2f, 0x2e, 0x76, 0x32, 0x72,
-	0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x69, 0x6e, 0x73, 0x74,
-	0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x4c, 0x69, 0x73, 0x74,
-	0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x30, 0x2e, 0x76, 0x32,
-	0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x69, 0x6e, 0x73,
-	0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x4c, 0x69, 0x73,
-	0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x6e, 0x0a,
-	0x0b, 0x41, 0x64, 0x64, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x2e, 0x2e, 0x76,
-	0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x69, 0x6e,
-	0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x41, 0x64,
-	0x64, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x2f, 0x2e, 0x76,
-	0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x69, 0x6e,
-	0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e, 0x41, 0x64,
-	0x64, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x74, 0x0a,
-	0x0d, 0x53, 0x74, 0x61, 0x72, 0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x30,
-	0x2e, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e,
-	0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x2e,
-	0x53, 0x74, 0x61, 0x72, 0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71,
-	0x1a, 0x31, 0x2e, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70,
-	0x70, 0x2e, 0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e,
-	0x64, 0x2e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x42, 0x7f, 0x0a, 0x26, 0x63, 0x6f, 0x6d, 0x2e, 0x76, 0x32, 0x72, 0x61, 0x79,
-	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x6f, 0x62, 0x73, 0x65, 0x72, 0x76,
-	0x61, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x50, 0x01, 0x5a,
-	0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x76, 0x32, 0x66, 0x6c,
-	0x79, 0x2f, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x76, 0x35, 0x2f,
-	0x61, 0x70, 0x70, 0x2f, 0x69, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2f, 0x63, 0x6f, 0x6d, 0x6d,
-	0x61, 0x6e, 0x64, 0xaa, 0x02, 0x1e, 0x56, 0x32, 0x52, 0x61, 0x79, 0x2e, 0x43, 0x6f, 0x72, 0x65,
-	0x2e, 0x41, 0x70, 0x70, 0x2e, 0x49, 0x6e, 0x73, 0x74, 0x6d, 0x61, 0x6e, 0x2e, 0x43, 0x6f, 0x6d,
-	0x6d, 0x61, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
-}
+const file_app_instman_command_command_proto_rawDesc = "" +
+	"\n" +
+	"!app/instman/command/command.proto\x12\x1ev2ray.core.app.instman.command\x1a common/protoext/extensions.proto\"\x11\n" +
+	"\x0fListInstanceReq\"&\n" +
+	"\x10ListInstanceResp\x12\x12\n" +
+	"\x04name\x18\x01 \x03(\tR\x04name\"p\n" +
+	"\x0eAddInstanceReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1e\n" +
+	"\n" +
+	"configType\x18\x02 \x01(\tR\n" +
+	"configType\x12*\n" +
+	"\x10configContentB64\x18\x03 \x01(\tR\x10configContentB64\"\x11\n" +
+	"\x0fAddInstanceResp\"&\n" +
+	"\x10StartInstanceReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"\x13\n" +
+	"\x11StartInstanceResp\"$\n" +
+	"\x06Config:\x1a\x82\xb5\x18\x16\n" +
+	"\vgrpcservice\x12\ainstman2\xf4\x02\n" +
+	"\x19InstanceManagementService\x12q\n" +
+	"\fListInstance\x12/.v2ray.core.app.instman.command.ListInstanceReq\x1a0.v2ray.core.app.instman.command.ListInstanceResp\x12n\n" +
+	"\vAddInstance\x12..v2ray.core.app.instman.command.AddInstanceReq\x1a/.v2ray.core.app.instman.command.AddInstanceResp\x12t\n" +
+	"\rStartInstance\x120.v2ray.core.app.instman.command.StartInstanceReq\x1a1.v2ray.core.app.instman.command.StartInstanceRespB\x7f\n" +
+	"&com.v2ray.core.app.observatory.instmanP\x01Z2github.com/v2fly/v2ray-core/v5/app/instman/command\xaa\x02\x1eV2Ray.Core.App.Instman.Commandb\x06proto3"
 
 var (
 	file_app_instman_command_command_proto_rawDescOnce sync.Once
-	file_app_instman_command_command_proto_rawDescData = file_app_instman_command_command_proto_rawDesc
+	file_app_instman_command_command_proto_rawDescData []byte
 )
 
 func file_app_instman_command_command_proto_rawDescGZIP() []byte {
 	file_app_instman_command_command_proto_rawDescOnce.Do(func() {
-		file_app_instman_command_command_proto_rawDescData = protoimpl.X.CompressGZIP(file_app_instman_command_command_proto_rawDescData)
+		file_app_instman_command_command_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_app_instman_command_command_proto_rawDesc), len(file_app_instman_command_command_proto_rawDesc)))
 	})
 	return file_app_instman_command_command_proto_rawDescData
 }
 
 var file_app_instman_command_command_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_app_instman_command_command_proto_goTypes = []interface{}{
+var file_app_instman_command_command_proto_goTypes = []any{
 	(*ListInstanceReq)(nil),   // 0: v2ray.core.app.instman.command.ListInstanceReq
 	(*ListInstanceResp)(nil),  // 1: v2ray.core.app.instman.command.ListInstanceResp
 	(*AddInstanceReq)(nil),    // 2: v2ray.core.app.instman.command.AddInstanceReq
@@ -427,97 +375,11 @@ func file_app_instman_command_command_proto_init() {
 	if File_app_instman_command_command_proto != nil {
 		return
 	}
-	if !protoimpl.UnsafeEnabled {
-		file_app_instman_command_command_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListInstanceReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_instman_command_command_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListInstanceResp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_instman_command_command_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddInstanceReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_instman_command_command_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddInstanceResp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_instman_command_command_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StartInstanceReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_instman_command_command_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StartInstanceResp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_instman_command_command_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_app_instman_command_command_proto_rawDesc,
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_app_instman_command_command_proto_rawDesc), len(file_app_instman_command_command_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
@@ -528,7 +390,6 @@ func file_app_instman_command_command_proto_init() {
 		MessageInfos:      file_app_instman_command_command_proto_msgTypes,
 	}.Build()
 	File_app_instman_command_command_proto = out.File
-	file_app_instman_command_command_proto_rawDesc = nil
 	file_app_instman_command_command_proto_goTypes = nil
 	file_app_instman_command_command_proto_depIdxs = nil
 }

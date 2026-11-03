@@ -68,7 +68,7 @@ func filterMessage(ctx context.Context, message protoreflect.Message) error {
 		switch descriptor.Kind() {
 		case protoreflect.MessageKind:
 			if descriptor.IsMap() {
-				err = filterMap(ctx, value.Map())
+				err = filterMap(ctx, descriptor, value.Map())
 				break
 			}
 			if descriptor.IsList() {
@@ -85,8 +85,11 @@ func filterMessage(ctx context.Context, message protoreflect.Message) error {
 	}
 
 	fsenvironment := envctx.EnvironmentFromContext(ctx)
-	fsifce := fsenvironment.(filesystemcap.FileSystemCapabilitySet)
+	fsifce, fsifceOk := fsenvironment.(filesystemcap.FileSystemCapabilitySet)
 	for _, v := range fileReadingQueue {
+		if !fsifceOk {
+			return newError("unable to read file as filesystem capability is not given")
+		}
 		field := message.Descriptor().Fields().ByTextName(v.field)
 		if v.filename == "" {
 			continue
@@ -114,7 +117,10 @@ func filterMessage(ctx context.Context, message protoreflect.Message) error {
 	return nil
 }
 
-func filterMap(ctx context.Context, mapValue protoreflect.Map) error {
+func filterMap(ctx context.Context, descriptor protoreflect.FieldDescriptor, mapValue protoreflect.Map) error {
+	if descriptor.MapValue().Kind() != protoreflect.MessageKind {
+		return nil
+	}
 	var err error
 	mapValue.Range(func(key protoreflect.MapKey, value protoreflect.Value) bool {
 		err = filterMessage(ctx, value.Message())

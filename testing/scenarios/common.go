@@ -13,6 +13,8 @@ import (
 	"syscall"
 	"time"
 
+	"golang.org/x/net/proxy"
+
 	"google.golang.org/protobuf/proto"
 
 	core "github.com/v2fly/v2ray-core/v5"
@@ -168,6 +170,26 @@ func withDefaultApps(config *core.Config) *core.Config {
 	return config
 }
 
+func testTCPConnViaSocks(socksPort, testPort net.Port, payloadSize int, timeout time.Duration) func() error { //nolint: unparam
+	return func() error {
+		socksDialer, err := proxy.SOCKS5("tcp", "127.0.0.1:"+socksPort.String(), nil, nil)
+		if err != nil {
+			return err
+		}
+		destAddr := &net.TCPAddr{
+			IP:   []byte{127, 0, 0, 1},
+			Port: int(testPort),
+		}
+		conn, err := socksDialer.Dial("tcp", destAddr.String())
+		if err != nil {
+			return err
+		}
+		defer conn.Close()
+
+		return testTCPConn2(conn, payloadSize, timeout)()
+	}
+}
+
 func testTCPConn(port net.Port, payloadSize int, timeout time.Duration) func() error {
 	return func() error {
 		conn, err := net.DialTCP("tcp", nil, &net.TCPAddr{
@@ -214,7 +236,11 @@ func testTCPConn2(conn net.Conn, payloadSize int, timeout time.Duration) func() 
 		payload := make([]byte, payloadSize)
 		common.Must2(rand.Read(payload))
 
+		if err := conn.SetWriteDeadline(time.Now().Add(timeout)); err != nil {
+			return err
+		}
 		nBytes, err := conn.Write(payload)
+		conn.SetWriteDeadline(time.Time{}) //nolint: errcheck
 		if err != nil {
 			return err
 		}

@@ -5,6 +5,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -15,21 +16,18 @@ const (
 )
 
 type Addons struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Flow          string                 `protobuf:"bytes,1,opt,name=Flow,proto3" json:"Flow,omitempty"`
+	Seed          []byte                 `protobuf:"bytes,2,opt,name=Seed,proto3" json:"Seed,omitempty"`
 	unknownFields protoimpl.UnknownFields
-
-	Flow string `protobuf:"bytes,1,opt,name=Flow,proto3" json:"Flow,omitempty"`
-	Seed []byte `protobuf:"bytes,2,opt,name=Seed,proto3" json:"Seed,omitempty"`
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Addons) Reset() {
 	*x = Addons{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proxy_vless_encoding_addons_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_proxy_vless_encoding_addons_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *Addons) String() string {
@@ -40,7 +38,7 @@ func (*Addons) ProtoMessage() {}
 
 func (x *Addons) ProtoReflect() protoreflect.Message {
 	mi := &file_proxy_vless_encoding_addons_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -71,39 +69,28 @@ func (x *Addons) GetSeed() []byte {
 
 var File_proxy_vless_encoding_addons_proto protoreflect.FileDescriptor
 
-var file_proxy_vless_encoding_addons_proto_rawDesc = []byte{
-	0x0a, 0x21, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2f, 0x76, 0x6c, 0x65, 0x73, 0x73, 0x2f, 0x65, 0x6e,
-	0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x2f, 0x61, 0x64, 0x64, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x12, 0x1f, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x76, 0x6c, 0x65, 0x73, 0x73, 0x2e, 0x65, 0x6e, 0x63, 0x6f,
-	0x64, 0x69, 0x6e, 0x67, 0x22, 0x30, 0x0a, 0x06, 0x41, 0x64, 0x64, 0x6f, 0x6e, 0x73, 0x12, 0x12,
-	0x0a, 0x04, 0x46, 0x6c, 0x6f, 0x77, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x46, 0x6c,
-	0x6f, 0x77, 0x12, 0x12, 0x0a, 0x04, 0x53, 0x65, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c,
-	0x52, 0x04, 0x53, 0x65, 0x65, 0x64, 0x42, 0x7e, 0x0a, 0x23, 0x63, 0x6f, 0x6d, 0x2e, 0x76, 0x32,
-	0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x76,
-	0x6c, 0x65, 0x73, 0x73, 0x2e, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x50, 0x01, 0x5a,
-	0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x76, 0x32, 0x66, 0x6c,
-	0x79, 0x2f, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x76, 0x35, 0x2f,
-	0x70, 0x72, 0x6f, 0x78, 0x79, 0x2f, 0x76, 0x6c, 0x65, 0x73, 0x73, 0x2f, 0x65, 0x6e, 0x63, 0x6f,
-	0x64, 0x69, 0x6e, 0x67, 0xaa, 0x02, 0x1f, 0x56, 0x32, 0x52, 0x61, 0x79, 0x2e, 0x43, 0x6f, 0x72,
-	0x65, 0x2e, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x2e, 0x56, 0x6c, 0x65, 0x73, 0x73, 0x2e, 0x45, 0x6e,
-	0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
-}
+const file_proxy_vless_encoding_addons_proto_rawDesc = "" +
+	"\n" +
+	"!proxy/vless/encoding/addons.proto\x12\x1fv2ray.core.proxy.vless.encoding\"0\n" +
+	"\x06Addons\x12\x12\n" +
+	"\x04Flow\x18\x01 \x01(\tR\x04Flow\x12\x12\n" +
+	"\x04Seed\x18\x02 \x01(\fR\x04SeedB~\n" +
+	"#com.v2ray.core.proxy.vless.encodingP\x01Z3github.com/v2fly/v2ray-core/v5/proxy/vless/encoding\xaa\x02\x1fV2Ray.Core.Proxy.Vless.Encodingb\x06proto3"
 
 var (
 	file_proxy_vless_encoding_addons_proto_rawDescOnce sync.Once
-	file_proxy_vless_encoding_addons_proto_rawDescData = file_proxy_vless_encoding_addons_proto_rawDesc
+	file_proxy_vless_encoding_addons_proto_rawDescData []byte
 )
 
 func file_proxy_vless_encoding_addons_proto_rawDescGZIP() []byte {
 	file_proxy_vless_encoding_addons_proto_rawDescOnce.Do(func() {
-		file_proxy_vless_encoding_addons_proto_rawDescData = protoimpl.X.CompressGZIP(file_proxy_vless_encoding_addons_proto_rawDescData)
+		file_proxy_vless_encoding_addons_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proxy_vless_encoding_addons_proto_rawDesc), len(file_proxy_vless_encoding_addons_proto_rawDesc)))
 	})
 	return file_proxy_vless_encoding_addons_proto_rawDescData
 }
 
 var file_proxy_vless_encoding_addons_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_proxy_vless_encoding_addons_proto_goTypes = []interface{}{
+var file_proxy_vless_encoding_addons_proto_goTypes = []any{
 	(*Addons)(nil), // 0: v2ray.core.proxy.vless.encoding.Addons
 }
 var file_proxy_vless_encoding_addons_proto_depIdxs = []int32{
@@ -119,25 +106,11 @@ func file_proxy_vless_encoding_addons_proto_init() {
 	if File_proxy_vless_encoding_addons_proto != nil {
 		return
 	}
-	if !protoimpl.UnsafeEnabled {
-		file_proxy_vless_encoding_addons_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Addons); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_proxy_vless_encoding_addons_proto_rawDesc,
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proxy_vless_encoding_addons_proto_rawDesc), len(file_proxy_vless_encoding_addons_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
@@ -148,7 +121,6 @@ func file_proxy_vless_encoding_addons_proto_init() {
 		MessageInfos:      file_proxy_vless_encoding_addons_proto_msgTypes,
 	}.Build()
 	File_proxy_vless_encoding_addons_proto = out.File
-	file_proxy_vless_encoding_addons_proto_rawDesc = nil
 	file_proxy_vless_encoding_addons_proto_goTypes = nil
 	file_proxy_vless_encoding_addons_proto_depIdxs = nil
 }

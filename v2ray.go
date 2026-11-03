@@ -3,10 +3,15 @@ package core
 import (
 	"context"
 	"reflect"
-	"sync"
+	sync "sync"
+
+	"github.com/v2fly/v2ray-core/v5/common/environment/deferredpersistentstorage"
+	"github.com/v2fly/v2ray-core/v5/common/environment/filesystemimpl"
+	"github.com/v2fly/v2ray-core/v5/features/extension/storage"
 
 	"github.com/v2fly/v2ray-core/v5/common"
 	"github.com/v2fly/v2ray-core/v5/common/environment"
+	"github.com/v2fly/v2ray-core/v5/common/environment/systemnetworkimpl"
 	"github.com/v2fly/v2ray-core/v5/common/environment/transientstorageimpl"
 	"github.com/v2fly/v2ray-core/v5/common/serial"
 	"github.com/v2fly/v2ray-core/v5/features"
@@ -141,6 +146,18 @@ func AddOutboundHandler(server *Instance, config *OutboundHandlerConfig) error {
 	return nil
 }
 
+func RemoveOutboundHandler(server *Instance, tag string) error {
+	outboundManager := server.GetFeature(outbound.ManagerType()).(outbound.Manager)
+	if err := outboundManager.RemoveHandler(server.ctx, tag); err != nil {
+		return err
+	}
+
+	if err := server.env.DropProxyEnvironment("o" + tag); err != nil {
+		return err
+	}
+	return nil
+}
+
 func addOutboundHandlers(server *Instance, configs []*OutboundHandlerConfig) error {
 	for _, outboundConfig := range configs {
 		if err := AddOutboundHandler(server, outboundConfig); err != nil {
@@ -191,7 +208,15 @@ func initInstanceWithConfig(config *Config, server *Instance) (bool, error) {
 		return true, err
 	}
 
-	server.env = environment.NewRootEnvImpl(server.ctx, transientstorageimpl.NewScopedTransientStorageImpl())
+	defaultNetworkImpl := systemnetworkimpl.NewSystemNetworkDefault()
+	defaultFilesystemImpl := filesystemimpl.NewDefaultFileSystemDefaultImpl()
+	deferredPersistentStorageImpl := deferredpersistentstorage.NewDeferredPersistentStorage(server.ctx)
+	server.env = environment.NewRootEnvImpl(server.ctx,
+		transientstorageimpl.NewScopedTransientStorageImpl(),
+		defaultNetworkImpl.Dialer(),
+		defaultNetworkImpl.Listener(),
+		defaultFilesystemImpl,
+		deferredPersistentStorageImpl)
 
 	for _, appSettings := range config.App {
 		settings, err := serial.GetInstanceOf(appSettings)
@@ -231,6 +256,12 @@ func initInstanceWithConfig(config *Config, server *Instance) (bool, error) {
 
 	if server.featureResolutions != nil {
 		return true, newError("not all dependency are resolved.")
+	}
+
+	if persistentStorageService := server.GetFeature(storage.ScopedPersistentStorageServiceType); persistentStorageService != nil {
+		deferredPersistentStorageImpl.ProvideInner(server.ctx, persistentStorageService.(storage.ScopedPersistentStorage))
+	} else {
+		deferredPersistentStorageImpl.ProvideInner(server.ctx, nil)
 	}
 
 	if err := addInboundHandlers(server, config.Inbound); err != nil {

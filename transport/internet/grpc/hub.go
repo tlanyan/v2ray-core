@@ -23,14 +23,13 @@ type Listener struct {
 	handler internet.ConnHandler
 	local   net.Addr
 	config  *Config
-	locker  *internet.FileLocker // for unix domain socket
 
 	s *grpc.Server
 }
 
 func (l Listener) Tun(server encoding.GunService_TunServer) error {
 	tunCtx, cancel := context.WithCancel(l.ctx)
-	l.handler(encoding.NewGunConn(server, cancel))
+	l.handler(encoding.NewGunConn(server, cancel, l.config.GetParseXForwardedFor()))
 	<-tunCtx.Done()
 	return nil
 }
@@ -95,10 +94,6 @@ func Listen(ctx context.Context, address net.Address, port net.Port, settings *i
 			if err != nil {
 				newError("failed to listen on ", address).Base(err).AtError().WriteToLog(session.ExportIDToError(ctx))
 				return
-			}
-			locker := ctx.Value(address.Domain())
-			if locker != nil {
-				listener.locker = locker.(*internet.FileLocker)
 			}
 		} else { // tcp
 			streamListener, err = internet.ListenSystem(ctx, &net.TCPAddr{

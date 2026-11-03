@@ -3,10 +3,10 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"go/build"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -48,7 +48,7 @@ func GetRuntimeEnv(key string) (string, error) {
 	}
 	var data []byte
 	var runtimeEnv string
-	data, readErr := ioutil.ReadFile(file)
+	data, readErr := os.ReadFile(file)
 	if readErr != nil {
 		return "", readErr
 	}
@@ -93,7 +93,7 @@ Command "%s" not found.
 Make sure that %s is in your system path or current path.
 Download %s v%s or later from https://github.com/protocolbuffers/protobuf/releases
 `, protoc, protoc, protoc, targetedVersion)
-		return "", fmt.Errorf(errStr)
+		return "", fmt.Errorf("%v", errStr)
 	}
 	return path, nil
 }
@@ -108,9 +108,9 @@ func getProjectProtocVersion(url string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("can not read from body")
 	}
-	versionRegexp := regexp.MustCompile(`\/\/\s*protoc\s*v(\d+\.\d+\.\d+)`)
+	versionRegexp := regexp.MustCompile(`\/\/\s*protoc\s*v(\d+\.(\d+\.\d+))`)
 	matched := versionRegexp.FindStringSubmatch(string(body))
-	return matched[1], nil
+	return matched[2], nil
 }
 
 func getInstalledProtocVersion(protocPath string) (string, error) {
@@ -120,9 +120,15 @@ func getInstalledProtocVersion(protocPath string) (string, error) {
 	if cmdErr != nil {
 		return "", cmdErr
 	}
-	versionRegexp := regexp.MustCompile(`protoc\s*(\d+\.\d+\.\d+)`)
+	versionRegexp := regexp.MustCompile(`protoc\s*(\d+\.\d+(\.\d)*)`)
 	matched := versionRegexp.FindStringSubmatch(string(output))
-	return matched[1], nil
+	installedVersion := ""
+	if len(matched) == 0 {
+		return "", errors.New("can not parse protoc version")
+	}
+	installedVersion += matched[1]
+	fmt.Println("Using protoc version: " + installedVersion)
+	return installedVersion, nil
 }
 
 func parseVersion(s string, width int) int64 {
@@ -174,10 +180,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
-	}
-
-	if linkPath, err := os.Readlink(protoc); err == nil {
-		protoc = linkPath
 	}
 
 	installedVersion, err := getInstalledProtocVersion(protoc)

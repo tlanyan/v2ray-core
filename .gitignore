@@ -26,3 +26,7 @@ vprotogen
 errorgen
 !common/errors/errorgen/
 *.dat
+*~
+[._]*.un~
+
+.golangci.yml

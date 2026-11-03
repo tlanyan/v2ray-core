@@ -16,6 +16,7 @@ import (
 	"github.com/v2fly/v2ray-core/v5/transport/internet/domainsocket"
 	httpheader "github.com/v2fly/v2ray-core/v5/transport/internet/headers/http"
 	"github.com/v2fly/v2ray-core/v5/transport/internet/http"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/hysteria2"
 	"github.com/v2fly/v2ray-core/v5/transport/internet/kcp"
 	"github.com/v2fly/v2ray-core/v5/transport/internet/quic"
 	"github.com/v2fly/v2ray-core/v5/transport/internet/tcp"
@@ -137,6 +138,33 @@ func (c *TCPConfig) Build() (proto.Message, error) {
 	return config, nil
 }
 
+type Hy2ConfigCongestion struct {
+	Type     string `json:"type"`
+	UpMbps   uint64 `json:"up_mbps"`
+	DownMbps uint64 `json:"down_mbps"`
+}
+
+type Hy2Config struct {
+	Password              string              `json:"password"`
+	Congestion            Hy2ConfigCongestion `json:"congestion"`
+	UseUDPExtension       bool                `json:"use_udp_extension"`
+	IgnoreClientBandwidth bool                `json:"ignore_client_bandwidth"`
+}
+
+// Build implements Buildable.
+func (c *Hy2Config) Build() (proto.Message, error) {
+	return &hysteria2.Config{
+		Password: c.Password,
+		Congestion: &hysteria2.Congestion{
+			Type:     c.Congestion.Type,
+			DownMbps: c.Congestion.DownMbps,
+			UpMbps:   c.Congestion.UpMbps,
+		},
+		UseUdpExtension:       c.UseUDPExtension,
+		IgnoreClientBandwidth: c.IgnoreClientBandwidth,
+	}, nil
+}
+
 type WebSocketConfig struct {
 	Path                 string            `json:"path"`
 	Headers              map[string]string `json:"headers"`
@@ -144,6 +172,7 @@ type WebSocketConfig struct {
 	MaxEarlyData         int32             `json:"maxEarlyData"`
 	UseBrowserForwarding bool              `json:"useBrowserForwarding"`
 	EarlyDataHeaderName  string            `json:"earlyDataHeaderName"`
+	ParseXForwardedFor   bool              `json:"parseXForwardedFor"`
 }
 
 // Build implements Buildable.
@@ -162,6 +191,7 @@ func (c *WebSocketConfig) Build() (proto.Message, error) {
 		MaxEarlyData:         c.MaxEarlyData,
 		UseBrowserForwarding: c.UseBrowserForwarding,
 		EarlyDataHeaderName:  c.EarlyDataHeaderName,
+		ParseXForwardedFor:   c.ParseXForwardedFor,
 	}
 	if c.AcceptProxyProtocol {
 		config.AcceptProxyProtocol = c.AcceptProxyProtocol
@@ -170,16 +200,18 @@ func (c *WebSocketConfig) Build() (proto.Message, error) {
 }
 
 type HTTPConfig struct {
-	Host    *cfgcommon.StringList            `json:"host"`
-	Path    string                           `json:"path"`
-	Method  string                           `json:"method"`
-	Headers map[string]*cfgcommon.StringList `json:"headers"`
+	Host               *cfgcommon.StringList            `json:"host"`
+	Path               string                           `json:"path"`
+	Method             string                           `json:"method"`
+	Headers            map[string]*cfgcommon.StringList `json:"headers"`
+	ParseXForwardedFor bool                             `json:"parseXForwardedFor"`
 }
 
 // Build implements Buildable.
 func (c *HTTPConfig) Build() (proto.Message, error) {
 	config := &http.Config{
-		Path: c.Path,
+		Path:               c.Path,
+		ParseXForwardedFor: c.ParseXForwardedFor,
 	}
 	if c.Host != nil {
 		config.Host = []string(*c.Host)
@@ -279,6 +311,8 @@ func (p TransportProtocol) Build() (string, error) {
 		return "quic", nil
 	case "gun", "grpc":
 		return "gun", nil
+	case "hy2", "hysteria2":
+		return "hysteria2", nil
 	default:
 		return "", newError("Config: unknown transport protocol: ", p)
 	}
@@ -296,6 +330,7 @@ type StreamConfig struct {
 	QUICSettings   *QUICConfig             `json:"quicSettings"`
 	GunSettings    *GunConfig              `json:"gunSettings"`
 	GRPCSettings   *GunConfig              `json:"grpcSettings"`
+	Hy2Settings    *Hy2Config              `json:"hy2Settings"`
 	SocketSettings *socketcfg.SocketConfig `json:"sockopt"`
 }
 
@@ -395,6 +430,16 @@ func (c *StreamConfig) Build() (*internet.StreamConfig, error) {
 		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
 			ProtocolName: "gun",
 			Settings:     serial.ToTypedMessage(gs),
+		})
+	}
+	if c.Hy2Settings != nil {
+		hy2, err := c.Hy2Settings.Build()
+		if err != nil {
+			return nil, newError("Failed to build hy2 config.").Base(err)
+		}
+		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
+			ProtocolName: "hysteria2",
+			Settings:     serial.ToTypedMessage(hy2),
 		})
 	}
 	if c.SocketSettings != nil {

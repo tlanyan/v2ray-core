@@ -7,6 +7,7 @@ import (
 	anypb "google.golang.org/protobuf/types/known/anypb"
 	reflect "reflect"
 	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -18,24 +19,21 @@ const (
 
 // Config is the settings for Commander.
 type Config struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
+	state protoimpl.MessageState `protogen:"open.v1"`
 	// Tag of the outbound handler that handles grpc connections.
 	Tag string `protobuf:"bytes,1,opt,name=tag,proto3" json:"tag,omitempty"`
 	// Services that supported by this server. All services must implement Service
 	// interface.
-	Service []*anypb.Any `protobuf:"bytes,2,rep,name=service,proto3" json:"service,omitempty"`
+	Service       []*anypb.Any `protobuf:"bytes,2,rep,name=service,proto3" json:"service,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Config) Reset() {
 	*x = Config{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_commander_config_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_commander_config_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *Config) String() string {
@@ -46,7 +44,7 @@ func (*Config) ProtoMessage() {}
 
 func (x *Config) ProtoReflect() protoreflect.Message {
 	mi := &file_app_commander_config_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -77,18 +75,16 @@ func (x *Config) GetService() []*anypb.Any {
 
 // ReflectionConfig is the placeholder config for ReflectionService.
 type ReflectionConfig struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ReflectionConfig) Reset() {
 	*x = ReflectionConfig{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_commander_config_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_commander_config_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *ReflectionConfig) String() string {
@@ -99,7 +95,7 @@ func (*ReflectionConfig) ProtoMessage() {}
 
 func (x *ReflectionConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_app_commander_config_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -115,21 +111,18 @@ func (*ReflectionConfig) Descriptor() ([]byte, []int) {
 }
 
 type SimplifiedConfig struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tag           string                 `protobuf:"bytes,1,opt,name=tag,proto3" json:"tag,omitempty"`
+	Name          []string               `protobuf:"bytes,2,rep,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
-
-	Tag  string   `protobuf:"bytes,1,opt,name=tag,proto3" json:"tag,omitempty"`
-	Name []string `protobuf:"bytes,2,rep,name=name,proto3" json:"name,omitempty"`
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *SimplifiedConfig) Reset() {
 	*x = SimplifiedConfig{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_commander_config_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
+	mi := &file_app_commander_config_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
 }
 
 func (x *SimplifiedConfig) String() string {
@@ -140,7 +133,7 @@ func (*SimplifiedConfig) ProtoMessage() {}
 
 func (x *SimplifiedConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_app_commander_config_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
+	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
 			ms.StoreMessageInfo(mi)
@@ -171,52 +164,35 @@ func (x *SimplifiedConfig) GetName() []string {
 
 var File_app_commander_config_proto protoreflect.FileDescriptor
 
-var file_app_commander_config_proto_rawDesc = []byte{
-	0x0a, 0x1a, 0x61, 0x70, 0x70, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x65, 0x72, 0x2f,
-	0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x18, 0x76, 0x32,
-	0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x63, 0x6f, 0x6d,
-	0x6d, 0x61, 0x6e, 0x64, 0x65, 0x72, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x1a, 0x20, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x65,
-	0x78, 0x74, 0x2f, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x22, 0x4a, 0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x10, 0x0a,
-	0x03, 0x74, 0x61, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x74, 0x61, 0x67, 0x12,
-	0x2e, 0x0a, 0x07, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
-	0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x07, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x22,
-	0x35, 0x0a, 0x10, 0x52, 0x65, 0x66, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x3a, 0x21, 0x82, 0xb5, 0x18, 0x0d, 0x0a, 0x0b, 0x67, 0x72, 0x70, 0x63, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x82, 0xb5, 0x18, 0x0c, 0x12, 0x0a, 0x72, 0x65, 0x66, 0x6c,
-	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x56, 0x0a, 0x10, 0x53, 0x69, 0x6d, 0x70, 0x6c, 0x69,
-	0x66, 0x69, 0x65, 0x64, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x10, 0x0a, 0x03, 0x74, 0x61,
-	0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x74, 0x61, 0x67, 0x12, 0x12, 0x0a, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x3a, 0x1c, 0x82, 0xb5, 0x18, 0x09, 0x0a, 0x07, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x82,
-	0xb5, 0x18, 0x0b, 0x12, 0x09, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x65, 0x72, 0x42, 0x69,
-	0x0a, 0x1c, 0x63, 0x6f, 0x6d, 0x2e, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2e, 0x63, 0x6f, 0x72, 0x65,
-	0x2e, 0x61, 0x70, 0x70, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x65, 0x72, 0x50, 0x01,
-	0x5a, 0x2c, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x76, 0x32, 0x66,
-	0x6c, 0x79, 0x2f, 0x76, 0x32, 0x72, 0x61, 0x79, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x76, 0x35,
-	0x2f, 0x61, 0x70, 0x70, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x65, 0x72, 0xaa, 0x02,
-	0x18, 0x56, 0x32, 0x52, 0x61, 0x79, 0x2e, 0x43, 0x6f, 0x72, 0x65, 0x2e, 0x41, 0x70, 0x70, 0x2e,
-	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
-}
+const file_app_commander_config_proto_rawDesc = "" +
+	"\n" +
+	"\x1aapp/commander/config.proto\x12\x18v2ray.core.app.commander\x1a\x19google/protobuf/any.proto\x1a common/protoext/extensions.proto\"J\n" +
+	"\x06Config\x12\x10\n" +
+	"\x03tag\x18\x01 \x01(\tR\x03tag\x12.\n" +
+	"\aservice\x18\x02 \x03(\v2\x14.google.protobuf.AnyR\aservice\"1\n" +
+	"\x10ReflectionConfig:\x1d\x82\xb5\x18\x19\n" +
+	"\vgrpcservice\x12\n" +
+	"reflection\"R\n" +
+	"\x10SimplifiedConfig\x12\x10\n" +
+	"\x03tag\x18\x01 \x01(\tR\x03tag\x12\x12\n" +
+	"\x04name\x18\x02 \x03(\tR\x04name:\x18\x82\xb5\x18\x14\n" +
+	"\aservice\x12\tcommanderBi\n" +
+	"\x1ccom.v2ray.core.app.commanderP\x01Z,github.com/v2fly/v2ray-core/v5/app/commander\xaa\x02\x18V2Ray.Core.App.Commanderb\x06proto3"
 
 var (
 	file_app_commander_config_proto_rawDescOnce sync.Once
-	file_app_commander_config_proto_rawDescData = file_app_commander_config_proto_rawDesc
+	file_app_commander_config_proto_rawDescData []byte
 )
 
 func file_app_commander_config_proto_rawDescGZIP() []byte {
 	file_app_commander_config_proto_rawDescOnce.Do(func() {
-		file_app_commander_config_proto_rawDescData = protoimpl.X.CompressGZIP(file_app_commander_config_proto_rawDescData)
+		file_app_commander_config_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_app_commander_config_proto_rawDesc), len(file_app_commander_config_proto_rawDesc)))
 	})
 	return file_app_commander_config_proto_rawDescData
 }
 
 var file_app_commander_config_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_app_commander_config_proto_goTypes = []interface{}{
+var file_app_commander_config_proto_goTypes = []any{
 	(*Config)(nil),           // 0: v2ray.core.app.commander.Config
 	(*ReflectionConfig)(nil), // 1: v2ray.core.app.commander.ReflectionConfig
 	(*SimplifiedConfig)(nil), // 2: v2ray.core.app.commander.SimplifiedConfig
@@ -236,49 +212,11 @@ func file_app_commander_config_proto_init() {
 	if File_app_commander_config_proto != nil {
 		return
 	}
-	if !protoimpl.UnsafeEnabled {
-		file_app_commander_config_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Config); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_commander_config_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ReflectionConfig); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_commander_config_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SimplifiedConfig); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_app_commander_config_proto_rawDesc,
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_app_commander_config_proto_rawDesc), len(file_app_commander_config_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   3,
 			NumExtensions: 0,
@@ -289,7 +227,6 @@ func file_app_commander_config_proto_init() {
 		MessageInfos:      file_app_commander_config_proto_msgTypes,
 	}.Build()
 	File_app_commander_config_proto = out.File
-	file_app_commander_config_proto_rawDesc = nil
 	file_app_commander_config_proto_goTypes = nil
 	file_app_commander_config_proto_depIdxs = nil
 }

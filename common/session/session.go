@@ -41,7 +41,7 @@ type Inbound struct {
 	Gateway net.Destination
 	// Tag of the inbound proxy that handles the connection.
 	Tag string
-	// User is the user that authencates for the inbound. May be nil if the protocol allows anounymous traffic.
+	// User is the user that authenticates for the inbound. May be nil if the protocol allows anonymous traffic.
 	User *protocol.MemoryUser
 }
 
@@ -51,6 +51,8 @@ type Outbound struct {
 	Target net.Destination
 	// Gateway address
 	Gateway net.Address
+	// Domain resolver to use when dialing
+	Resolver func(ctx context.Context, domain string) net.Address
 }
 
 // SniffingRequest controls the behavior of content sniffing.
@@ -78,7 +80,7 @@ type Sockopt struct {
 	Mark uint32
 }
 
-// SetAttribute attachs additional string attributes to content.
+// SetAttribute attaches additional string attributes to content.
 func (c *Content) SetAttribute(name string, value string) {
 	if c.Attributes == nil {
 		c.Attributes = make(map[string]string)

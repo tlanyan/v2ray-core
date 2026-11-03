@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/lucas-clemente/quic-go"
+	"github.com/quic-go/quic-go"
 
 	"github.com/v2fly/v2ray-core/v5/common"
 	"github.com/v2fly/v2ray-core/v5/common/buf"
@@ -154,7 +154,7 @@ func (c *sysConn) SyscallConn() (syscall.RawConn, error) {
 }
 
 type interConn struct {
-	stream quic.Stream
+	stream *quic.Stream
 	local  net.Addr
 	remote net.Addr
 }
